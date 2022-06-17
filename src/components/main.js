@@ -16,12 +16,31 @@ class Main extends Component {
     const { apiData } = this.state;
     let tableHeader;
     let tableContents;
+    let planetName;
+
+    const handleChange = (event) => {
+      console.log(event.target.value);
+      planetName = event.target.value;
+    };
+
     if (apiData.results !== undefined) {
+      // console.log(apiData.results);
+      // console.log(Object.keys(apiData.results[0]));
+      console.log(`PlanetName = ${planetName}`);
       const tableHeaderArray = Object.keys(apiData.results[0]);
       const tableHeaderFiltered = tableHeaderArray.filter((cell) => cell !== 'residents');
       tableHeader = tableHeaderFiltered.map((cell) => <th key={ cell }>{cell}</th>);
 
-      const tableContentsArray = apiData.results;
+      const isTatooine = (planet) => {
+        if (planet.name.includes(planetName)) {
+          return planet;
+        }
+      };
+
+      const filteredData = apiData.results.filter(isTatooine);
+      // const tableContentsArray = apiData.results;
+      console.log(filteredData);
+      const tableContentsArray = filteredData;
       tableContents = tableContentsArray.map((line) => {
         const tableLineArray = Object.values(line);
         const residentsPosition = 9;
@@ -34,16 +53,19 @@ class Main extends Component {
     }
 
     return (
-      <table>
-        <thead>
-          <tr>
-            {tableHeader}
-          </tr>
-        </thead>
-        <tbody>
-          {tableContents}
-        </tbody>
-      </table>
+      <div>
+        <input type="text" onChange={ handleChange } />
+        <table>
+          <thead>
+            <tr>
+              {tableHeader}
+            </tr>
+          </thead>
+          <tbody>
+            {tableContents}
+          </tbody>
+        </table>
+      </div>
     );
   }
 }
