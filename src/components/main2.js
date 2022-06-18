@@ -47,20 +47,20 @@ function Main2() {
     });
   };
 
-  const isTatooine = (planet) => {
-    if (planet.name.includes(planetName)) {
+  const filterByName = (planet) => {
+    if (planet.name.toLowerCase().includes(planetName.toLowerCase())) {
       return planet;
     }
   };
 
   const handleChange = (event) => {
     planetName = event.target.value;
-    console.log(planetName);
-    const filteredData = unfilteredData.filter(isTatooine);
-    console.log(filteredData);
-    console.log(unfilteredData);
-    if (filteredData.length > 0) {
-      setPlanetData(filteredData);
+    // console.log(planetName);
+    const filteredNames = unfilteredData.filter(filterByName);
+    // console.log(filteredNames);
+    // console.log(unfilteredData);
+    if (filteredNames.length > 0) {
+      setPlanetData(filteredNames);
     } else setPlanetData(unfilteredData);
   };
 
@@ -68,9 +68,64 @@ function Main2() {
     renderTable(planetData);
   }
 
+  const filterByParameter = (planet) => {
+    const columnFilter = document.getElementById('column-filter').value;
+    const valueFilter = parseInt(document.getElementById('value-filter').value, 10);
+    const comparisonFilter = document.getElementById('comparison-filter').value;
+    console.log(planet.name);
+    console.log(typeof planet[columnFilter]);
+    if (planet[columnFilter] !== 'unknown') {
+      const planetColumnData = parseInt(planet[columnFilter], 10);
+      if (comparisonFilter === 'igual a' && planetColumnData === valueFilter) {
+        return planet;
+      }
+      if (comparisonFilter === 'maior que' && planetColumnData > valueFilter) {
+        return planet;
+      }
+      if (comparisonFilter === 'menor que' && planetColumnData < valueFilter) {
+        return planet;
+      }
+    }
+  };
+
+  const renderFiltered = () => {
+    console.log(planetData);
+    const filteredParameter = planetData.filter(filterByParameter);
+    console.log(filteredParameter);
+    setPlanetData(filteredParameter);
+  };
+
   return (
     <div>
       <input type="text" onChange={ handleChange } data-testid="name-filter" />
+      <label htmlFor="filter_button">
+        <select id="column-filter" data-testid="column-filter">
+          <option>population</option>
+          <option>orbital_period</option>
+          <option>diameter</option>
+          <option>rotation_period</option>
+          <option>surface_water</option>
+        </select>
+        <select id="comparison-filter" data-testid="comparison-filter">
+          <option>maior que</option>
+          <option>menor que</option>
+          <option>igual a</option>
+        </select>
+        <input
+          type="number"
+          id="value-filter"
+          data-testid="value-filter"
+          defaultValue="0"
+        />
+      </label>
+      <button
+        id="filter_button"
+        type="button"
+        data-testid="button-filter"
+        onClick={ renderFiltered }
+      >
+        Filtrar
+      </button>
       <table>
         <thead>
           <tr>
