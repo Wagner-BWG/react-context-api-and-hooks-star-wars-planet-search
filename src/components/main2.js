@@ -3,6 +3,13 @@ import React, { useState, useEffect } from 'react';
 function Main2() {
   const [planetData, setPlanetData] = useState('planet data vazio');
   const [unfilteredData, setUnfilteredData] = useState('');
+  const [enabledFilters, setEnabledFilters] = useState({
+    population: true,
+    orbital_period: true,
+    diameter: true,
+    rotation_period: true,
+    surface_water: true,
+  });
 
   let tableHeader;
   let tableContents;
@@ -20,17 +27,7 @@ function Main2() {
     fetchAPI();
   }, []);
 
-  // useEffect(() => {
-  //   ;
-  // }, [planetData]);
-
-  // console.log(planetData);
-  // console.log(typeof planetData);
-
   const renderTable = (data) => {
-    // console.log('renderizou');
-    // console.log(Object.keys(apiData.results[0]));
-    // console.log(`PlanetName = ${planetName}`);
     const tableHeaderArray = Object.keys(data[0]);
     const tableHeaderFiltered = tableHeaderArray.filter((cell) => cell !== 'residents');
     tableHeader = tableHeaderFiltered.map((cell) => <th key={ cell }>{cell}</th>);
@@ -72,8 +69,7 @@ function Main2() {
     const columnFilter = document.getElementById('column-filter').value;
     const valueFilter = parseInt(document.getElementById('value-filter').value, 10);
     const comparisonFilter = document.getElementById('comparison-filter').value;
-    console.log(planet.name);
-    console.log(typeof planet[columnFilter]);
+
     if (planet[columnFilter] !== 'unknown') {
       const planetColumnData = parseInt(planet[columnFilter], 10);
       if (comparisonFilter === 'igual a' && planetColumnData === valueFilter) {
@@ -89,23 +85,33 @@ function Main2() {
   };
 
   const renderFiltered = () => {
-    console.log(planetData);
+    // console.log(planetData);
     const filteredParameter = planetData.filter(filterByParameter);
-    console.log(filteredParameter);
-    setPlanetData(filteredParameter);
+    if (filteredParameter.length > 0) {
+      const columnFilter = document.getElementById('column-filter').value;
+      setEnabledFilters({ ...enabledFilters, [columnFilter]: false });
+      setPlanetData(filteredParameter);
+    }
   };
+
+  const columnFilter = (
+    <select id="column-filter" data-testid="column-filter">
+      {enabledFilters.population ? <option id="population">population</option> : null}
+      {enabledFilters.orbital_period ? <option id="orbital_period">orbital_period</option>
+        : null}
+      {enabledFilters.diameter ? <option id="diameter">diameter</option> : null}
+      {enabledFilters.rotation_period
+        ? <option id="rotation_period">rotation_period</option> : null}
+      {enabledFilters.surface_water ? <option id="surface_water">surface_water</option>
+        : null}
+    </select>
+  );
 
   return (
     <div>
       <input type="text" onChange={ handleChange } data-testid="name-filter" />
       <label htmlFor="filter_button">
-        <select id="column-filter" data-testid="column-filter">
-          <option>population</option>
-          <option>orbital_period</option>
-          <option>diameter</option>
-          <option>rotation_period</option>
-          <option>surface_water</option>
-        </select>
+        {columnFilter}
         <select id="comparison-filter" data-testid="comparison-filter">
           <option>maior que</option>
           <option>menor que</option>
