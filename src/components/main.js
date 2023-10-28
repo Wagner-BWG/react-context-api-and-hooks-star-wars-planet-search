@@ -7,7 +7,8 @@ class Main extends Component {
   }
 
   async componentDidMount() {
-    const apiResponse = await fetch('https://swapi-trybe.herokuapp.com/api/planets/');
+    // const apiResponse = await fetch('https://swapi-trybe.herokuapp.com/api/planets/');
+    const apiResponse = await fetch('https://swapi.dev/api/planets/');
     const apiData = await apiResponse.json();
     this.setState({ apiData });
   }
