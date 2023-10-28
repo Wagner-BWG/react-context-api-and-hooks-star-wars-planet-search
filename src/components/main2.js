@@ -17,7 +17,8 @@ function Main2() {
 
   const fetchAPI = async () => {
     // console.log('Chamou fetchAPI');
-    const apiResponse = await fetch('https://swapi-trybe.herokuapp.com/api/planets/');
+    // const apiResponse = await fetch('https://swapi-trybe.herokuapp.com/api/planets/');
+    const apiResponse = await fetch('https://swapi.dev/api/planets/');
     const apiData = await apiResponse.json();
     setUnfilteredData(apiData.results);
     setPlanetData(apiData.results);
